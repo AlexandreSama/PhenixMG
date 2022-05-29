@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jouer</title>
+</head>
+<body>
+    <input type="text" name="Combien de ram ?" id="ramInput">
+    <button id="saveRam">Sauvegarder</button>
+
+    <button id="playMC">Jouer</button>
+    <p id="progressDownload" style="position: absolute; left: 709px; bottom: 91px; color: black; font-size: large;"></p>
+</body>
+
+<script>
+    const ipc = require('electron').ipcRenderer;
+    document.getElementById('saveRam').addEventListener('click', () => {
+        let ram = document.getElementById('ramInput').value
+        ipc.send('saveRam', (ram))
+    })
+
+    document.getElementById('playMC').addEventListener('click', () => {
+        ipc.send('playMC')
+    })
+
+    ipc.on('dataDownload', (event, data) => {
+        document.getElementById('progressDownload').innerHTML =
+            `Téléchargement des ${data.type} : ${data.task} / ${data.total}`
+        console.log(data.type)
+    })
+</script>
+</html>
