@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "icon": "src/logo.ico",
   "scripts": {
     "debug": "electron .",
     "build": "electron-builder build --win --publish never",
@@ -19,13 +20,14 @@
   },
   "homepage": "https://github.com/AlexandreSama/PhenixMG#readme",
   "devDependencies": {
-    "electron": "^19.0.1"
+    "electron": "^19.0.1",
+    "electron-builder": "^23.0.3"
   },
   "dependencies": {
     "adm-zip": "^0.5.9",
     "axios": "^0.27.2",
-    "electron-builder": "^23.0.3",
     "electron-updater": "^5.0.1",
+    "jquery": "^3.6.0",
     "minecraft-launcher-core": "^3.16.12",
     "msmc": "^3.1.0",
     "nodejs-file-downloader": "^4.9.3"

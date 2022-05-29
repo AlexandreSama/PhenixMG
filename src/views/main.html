@@ -1,34 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+		
+    <link rel="stylesheet" href="../assets/css/style.css">
     <title>Jouer</title>
 </head>
+
 <body>
-    <input type="text" name="Combien de ram ?" id="ramInput">
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                </button>
+            </div>
+            <div class="img bg-wrap text-center py-4" style="background-image: url(images/bg_1.jpg);">
+                <div class="user-logo" id="userInfos">
+                    <div class="img" id="userLogo"></div>
+                </div>
+            </div>
+            <ul class="list-unstyled components mb-5" id="listSide">
+                <li class="active">
+                    <a href="#"><span class="fa fa-home mr-3"></span> Accueil</a>
+                </li>
+                <!-- <li>
+                    <a href="#"><span class="fa fa-sign-out mr-3"></span> Se déconnecter</a>
+                </li> -->
+            </ul>
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+            <h2 class="mb-4">Phenix MG</h2>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Quantité de ram ? (Juste le nombre)" aria-label="Recipient's username" aria-describedby="button-addon2" style="background-color: black;">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+    <!-- <input type="text" name="Combien de ram ?" id="ramInput" />
     <button id="saveRam">Sauvegarder</button>
 
     <button id="playMC">Jouer</button>
-    <p id="progressDownload" style="position: absolute; left: 709px; bottom: 91px; color: black; font-size: large;"></p>
+    <p
+      id="progressDownload"
+      style="
+        position: absolute;
+        left: 709px;
+        bottom: 91px;
+        color: black;
+        font-size: large;
+      "
+    ></p> -->
 </body>
+<script src="https://kit.fontawesome.com/eec634434d.js" crossorigin="anonymous"></script>
+<script>window.$ = window.jQuery = require('jquery');</script>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/popper.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/main.js"></script>
 
 <script>
-    const ipc = require('electron').ipcRenderer;
-    document.getElementById('saveRam').addEventListener('click', () => {
-        let ram = document.getElementById('ramInput').value
-        ipc.send('saveRam', (ram))
+    let ul = document.getElementById('listSide')
+    let li = document.createElement('li')
+    let a = document.createElement('a')
+    let span = document.createElement('span')
+
+    span.setAttribute("class", "fa-solid fa-key")
+
+    a.setAttribute("id", "loginMC")
+    a.setAttribute("href", "#")
+    a.appendChild(span)
+    a.appendChild(document.createTextNode("   Se connecter"))
+
+    li.setAttribute('id', 'list')
+    li.appendChild(a)
+
+    ul.appendChild(li)
+
+
+    const ipc = require("electron").ipcRenderer;
+    document.getElementById('loginMC').addEventListener('click', () => {
+        ipc.send('loginMS')
     })
 
-    document.getElementById('playMC').addEventListener('click', () => {
-        ipc.send('playMC')
-    })
+    // document.getElementById("saveRam").addEventListener("click", () => {
+    //     let ram = document.getElementById("ramInput").value;
+    //     ipc.send("saveRam", ram);
+    // });
 
-    ipc.on('dataDownload', (event, data) => {
-        document.getElementById('progressDownload').innerHTML =
-            `Téléchargement des ${data.type} : ${data.task} / ${data.total}`
-        console.log(data.type)
+    // document.getElementById("playMC").addEventListener("click", () => {
+    //     ipc.send("playMC");
+    // });
+
+    // ipc.on("dataDownload", (event, data) => {
+    //     document.getElementById(
+    //         "progressDownload"
+    //     ).innerHTML = `Téléchargement des ${data.type} : ${data.task} / ${data.total}`;
+    //     console.log(data.type);
+    // });
+
+    ipc.on('loginSuccess', (event, data) => {
+        console.log(data)
+
+        let button = document.getElementById('loginMC').remove()
+        let lists = document.getElementById('list')
+        let newButton = document.createElement('a')
+        let newSpan = document.createElement('span')
+
+        newButton.setAttribute('id', 'logoutMC')
+        newButton.setAttribute("href", "#")
+        span.setAttribute('class', 'fa-solid fa-right-from-bracket')
+
+        newButton.appendChild(span)
+        newButton.appendChild(document.createTextNode("   Se déconnecter"))
+        lists.appendChild(newButton)
+
+        let userInfos = document.getElementById('userInfos')
+        let pdpUser = document.getElementById('userLogo')
+        let nameUser = document.createElement("h3")
+
+        pdpUser.setAttribute('style', `background-image: url('https://crafatar.com/avatars/${data.id}');`)
+        nameUser.innerHTML += data.name
+
+        userInfos.appendChild(nameUser)
     })
 </script>
+
 </html>

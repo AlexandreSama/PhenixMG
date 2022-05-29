@@ -5,6 +5,9 @@ const BrowserWindow = electron.BrowserWindow;
 const msmc = require('msmc')
 const fs = require('fs');
 const { writeRamToFile, launchMC, checkLauncherPaths } = require('./utils/functions');
+const {
+    autoUpdater
+} = require('electron-updater');
 
 let mainWindow;
 let MSResult;
@@ -18,11 +21,15 @@ function createWindow () {
 
   mainWindow = new BrowserWindow({width: 1800, height: 1200, webPreferences: {contextIsolation: false, nodeIntegration: true}}); // on définit une taille pour notre fenêtre
 
-  mainWindow.loadURL(`file://${__dirname}/views/login.html`); // on doit charger un chemin absolu
+  mainWindow.loadURL(`file://${__dirname}/views/main.html`); // on doit charger un chemin absolu
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  mainWindow.once('ready-to-show', () => {
+      autoUpdater.checkForUpdatesAndNotify()
+  })
 }
 
 app.on('ready', createWindow);
@@ -39,6 +46,24 @@ app.on('activate', () => {
     }
 });
 
+ipcMain.on('app_version', (event) => {
+    event.sender.send('app_version', {
+      version: app.getVersion()
+    });
+});
+
+autoUpdater.on('update-available', () => {
+    mainWindow.webContents.send('update_available')
+})
+
+autoUpdater.on('update-downloaded', () => {
+    mainWindow.webContents.send('update_downloaded')
+})
+
+ipcMain.on('restart_app', () => {
+    autoUpdater.quitAndInstall()
+})
+
 ipcMain.on('loginMS', (event, data) => {
     msmc.fastLaunch('raw', (update) => {
 
@@ -48,10 +73,8 @@ ipcMain.on('loginMS', (event, data) => {
             return;
         }
         MSResult = result
-        mainWindow.loadURL(`file://${__dirname}/../src/views/troll.html`)
-        mainWindow.webContents.once('dom-ready', () => {
-            mainWindow.webContents.send('MSData', result.profile)
-        })
+        console.log('testas')
+        mainWindow.webContents.send('loginSuccess', (result.profile))
     })
 
     checkLauncherPaths(paths[0], paths[2], paths[1], event)
