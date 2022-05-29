@@ -4,10 +4,20 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "debug": "electron ."
+    "debug": "electron .",
+    "build": "electron-builder build --win --publish never",
+    "deploy": "electron-builder build --win --publish always"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexandreSama/PhenixMG.git"
+  },
+  "author": "Alexandre",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexandreSama/PhenixMG/issues"
+  },
+  "homepage": "https://github.com/AlexandreSama/PhenixMG#readme",
   "devDependencies": {
     "electron": "^19.0.1"
   },
