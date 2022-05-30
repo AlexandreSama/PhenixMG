@@ -8,6 +8,8 @@ const { writeRamToFile, launchMC, checkLauncherPaths } = require('./utils/functi
 const {
     autoUpdater
 } = require('electron-updater');
+const logger = require("electron-log")
+logger.transports.file.level = "info"
 const notifier = require('node-notifier');
 
 let mainWindow;
@@ -30,7 +32,9 @@ function createWindow () {
   });
 
   mainWindow.once('ready-to-show', () => {
-      autoUpdater.checkForUpdatesAndNotify()
+      autoUpdater.checkForUpdates().then(resp => {
+          resp.updateInfo.version
+      })
   })
 }
 

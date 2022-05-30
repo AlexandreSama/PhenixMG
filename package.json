@@ -1,6 +1,6 @@
 {
   "name": "phenixmg",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "",
   "main": "src/index.js",
   "icon": "src/logo.ico",
@@ -26,6 +26,7 @@
   "dependencies": {
     "adm-zip": "^0.5.9",
     "axios": "^0.27.2",
+    "electron-log": "^4.4.7",
     "electron-updater": "^5.0.1",
     "jquery": "^3.6.0",
     "minecraft-launcher-core": "^3.16.12",
