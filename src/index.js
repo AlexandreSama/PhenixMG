@@ -8,10 +8,14 @@ const { writeRamToFile, launchMC, checkLauncherPaths } = require('./utils/functi
 const {
     autoUpdater
 } = require('electron-updater');
-const logger = require("electron-log")
-logger.transports.file.level = "info"
+const log = require('electron-log');
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "info"
+
 const notifier = require('node-notifier');
 
+log.info('App starting...');
 let mainWindow;
 let MSResult;
 let paths = [
@@ -20,6 +24,10 @@ let paths = [
     app.getPath('appData') + '\\Phenix\\java\\'
 ]
 let responseUpdate
+
+function sendStatusToWindow(text) {
+    log.info(text);
+}
 
 function createWindow () {
 
@@ -30,15 +38,12 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  mainWindow.once('ready-to-show', () => {
-      autoUpdater.checkForUpdates().then(resp => {
-          resp.updateInfo.version
-      })
-  })
 }
 
-app.on('ready', createWindow);
+app.on('ready', function() {
+    createWindow()
+    autoUpdater.checkForUpdatesAndNotify()
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -52,14 +57,20 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.on('app_version', (event) => {
-    event.sender.send('app_version', {
-      version: app.getVersion()
-    });
-});
+autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...');
+})
+
+autoUpdater.on('update-not-available', (info) => {
+    sendStatusToWindow('Update not available.');
+})
+
+autoUpdater.on('error', (err) => {
+    sendStatusToWindow('Error in auto-updater. ' + err);
+})
 
 autoUpdater.on('update-available', () => {
-    console.log('Update !')
+    sendStatusToWindow('Update available.');
     notifier.notify({
         title: 'Mise a jour est disponible !',
         message: 'Une mise a jour est disponible ! Voulez-vous la télécharger et l\'installer ?',
@@ -75,10 +86,6 @@ autoUpdater.on('update-downloaded', () => {
     if(responseUpdate == "oui"){
         autoUpdater.quitAndInstall()
     }
-})
-
-ipcMain.on('restart_app', () => {
-    autoUpdater.quitAndInstall()
 })
 
 ipcMain.on('loginMS', (event, data) => {
