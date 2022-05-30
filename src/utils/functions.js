@@ -115,19 +115,38 @@ async function checkMods(modsFolder, event) {
 }
 
 async function launchGame(result, rootFolder, javaFolder, ram, event) {
-    let opts = {
-        clientPackage: null,
-        authorization: getMCLC().getAuth(result),
-        root: rootFolder,
-        forge: rootFolder + 'forge.jar',
-        javaPath: path.join(javaFolder + 'bin\\java.exe') ,
-        version: {
-            number: "1.12.2",
-            type: "release"
-        },
-        memory: {
-            max: ram,
-            min: "4G"
+    let opts
+    if(!ram){
+        opts = {
+            clientPackage: null,
+            authorization: getMCLC().getAuth(result),
+            root: rootFolder,
+            forge: rootFolder + 'forge.jar',
+            javaPath: path.join(javaFolder + 'bin\\java.exe') ,
+            version: {
+                number: "1.12.2",
+                type: "release"
+            },
+            memory: {
+                max: ram,
+                min: "4G"
+            }
+        }
+    }else{
+        opts = {
+            clientPackage: null,
+            authorization: getMCLC().getAuth(result),
+            root: rootFolder,
+            forge: rootFolder + 'forge.jar',
+            javaPath: path.join(javaFolder + 'bin\\java.exe') ,
+            version: {
+                number: "1.12.2",
+                type: "release"
+            },
+            memory: {
+                max: "8G",
+                min: "4G"
+            }
         }
     }
     console.log("Starting!")
