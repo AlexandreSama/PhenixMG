@@ -25,10 +25,17 @@ let paths = [
 ]
 let responseUpdate
 
+/**
+ * It takes a string as an argument and logs it to the console.
+ * @param text - The text to be displayed in the status bar.
+ */
 function sendStatusToWindow(text) {
     log.info(text);
 }
 
+/**
+ * We create a new BrowserWindow object, which is a new window, and we load the main.html file into it.
+ */
 function createWindow () {
 
   mainWindow = new BrowserWindow({width: 1800, height: 1200, webPreferences: {contextIsolation: false, nodeIntegration: true}}); // on définit une taille pour notre fenêtre
@@ -40,35 +47,42 @@ function createWindow () {
   });
 }
 
+/* Checking for updates and notifying the user. */
 app.on('ready', function() {
     createWindow()
     autoUpdater.checkForUpdatesAndNotify()
 });
 
+/* A function that is called when all windows are closed. */
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
       app.quit();
     }
 });
 
+/* A function that is called when the user clicks on the app icon in the dock. */
 app.on('activate', () => {
     if (mainWindow === null) {
       createWindow();
     }
 });
 
+/* Listening for an update-not-available event and then sending a message to the window. */
 autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...');
 })
 
+/* Listening for an update-not-available event and then sending a message to the window. */
 autoUpdater.on('update-not-available', (info) => {
     sendStatusToWindow('Update not available.');
 })
 
+/* A listener for the autoUpdater. It listens for an error and then sends the error to the window. */
 autoUpdater.on('error', (err) => {
     sendStatusToWindow('Error in auto-updater. ' + err);
 })
 
+/* Showing a notification to the user when an update is available. */
 autoUpdater.on('update-available', () => {
     sendStatusToWindow('Update available.');
     notifier.notify({
@@ -82,12 +96,14 @@ autoUpdater.on('update-available', () => {
     })
 })
 
+/* Listening for an update-downloaded event and then sending a message to the window. */
 autoUpdater.on('update-downloaded', () => {
     if(responseUpdate == "oui"){
         autoUpdater.quitAndInstall()
     }
 })
 
+/* Listening for the loginMS event from the renderer process. */
 ipcMain.on('loginMS', (event, data) => {
     msmc.fastLaunch('raw', (update) => {
 
@@ -104,17 +120,13 @@ ipcMain.on('loginMS', (event, data) => {
     checkLauncherPaths(paths[0], paths[2], paths[1], event)
 })
 
+/* Saving the ram to a file. */
 ipcMain.on('saveRam', (event, data) => {
     let ram = data + "G"
     writeRamToFile(ram, paths[0] + 'infos.json')
-    // let ram = {
-    //     "ram": data.ram
-    // }
-
-    // let data = JSON.stringify(ram)
-    // fs.writeFileSync(paths[0] + 'infos.json', data)
 })
 
+/* Listening for the playMC event from the renderer process. */
 ipcMain.on('playMC', (event, data) => {
     fs.readFile(paths[0] + 'infos.json', (err, data) => {
         let ram = JSON.parse(data)
