@@ -36,27 +36,22 @@
 
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
+            <video id="background-video" autoplay loop>
+                <source src="http://193.168.146.71/phenixmg/asset/Backgroundlauncher.mp4" type="video/mp4">
+            </video>
             <h2 class="mb-4">Phenix MG</h2>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Quantité de ram ? (Juste le nombre)" aria-label="Recipient's username" aria-describedby="button-addon2" style="background-color: black;">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2">Sauvegarder</button>
+                <input type="text" class="form-control" placeholder="Quantité de ram ? (Juste le nombre)" aria-label="Recipient's username" aria-describedby="button-addon2" id="ramValue" style="background-color: transparent; color: black; border: 1px solid;">
+                <button class="btn btn-success" type="button" id="button-addon2">Sauvegarder</button>
             </div>
+
+            <button id="playMC">Jouer</button>
+            <div class="progress_bar">
+                <div class="progress-value"></div>
+            </div>
+            <p id="progressDownload" style="position: absolute; left: 870px; bottom: 91px; color: black; font-size: large;"></p>
         </div>
     </div>
-    <!-- <input type="text" name="Combien de ram ?" id="ramInput" />
-    <button id="saveRam">Sauvegarder</button>
-
-    <button id="playMC">Jouer</button>
-    <p
-      id="progressDownload"
-      style="
-        position: absolute;
-        left: 709px;
-        bottom: 91px;
-        color: black;
-        font-size: large;
-      "
-    ></p> -->
 </body>
 <script src="https://kit.fontawesome.com/eec634434d.js" crossorigin="anonymous"></script>
 <script>window.$ = window.jQuery = require('jquery');</script>
@@ -66,10 +61,13 @@
 <script src="../assets/js/main.js"></script>
 
 <script>
+    document.getElementById('background-video').volume = 0.2
     let ul = document.getElementById('listSide')
     let li = document.createElement('li')
     let a = document.createElement('a')
     let span = document.createElement('span')
+    let MSResult
+    const progressbar = document.querySelector(".progress-value");
 
     span.setAttribute("class", "fa-solid fa-key")
 
@@ -83,30 +81,83 @@
 
     ul.appendChild(li)
 
+    const changeProgress = (progress) => {
+        progressbar.style.width = `${progress}%`;
+    };
+
 
     const ipc = require("electron").ipcRenderer;
     document.getElementById('loginMC').addEventListener('click', () => {
         ipc.send('loginMS')
     })
 
-    // document.getElementById("saveRam").addEventListener("click", () => {
-    //     let ram = document.getElementById("ramInput").value;
-    //     ipc.send("saveRam", ram);
-    // });
+    document.getElementById("button-addon2").addEventListener("click", () => {
+        if(MSResult){
+            let ram = document.getElementById("ramValue").value;
+            ipc.send("saveRam", ram);
+        }else{
 
-    // document.getElementById("playMC").addEventListener("click", () => {
-    //     ipc.send("playMC");
-    // });
+        }
+    });
 
-    // ipc.on("dataDownload", (event, data) => {
-    //     document.getElementById(
-    //         "progressDownload"
-    //     ).innerHTML = `Téléchargement des ${data.type} : ${data.task} / ${data.total}`;
-    //     console.log(data.type);
-    // });
+    document.getElementById("playMC").addEventListener("click", () => {
+        if(MSResult){
+            ipc.send("playMC");
+        }
+    });
+
+    ipc.on('dataDownload', (event, data) => {
+        document.getElementById('progressDownload').innerHTML =
+            `Téléchargement des ${data.type} : ${data.task} / ${data.total}`
+        console.log(data.type)
+
+        if (data.type === "assets") {
+            let percent = (data.task / data.total) * 100
+            changeProgress(percent)
+        } else if (data.type === "natives") {
+            let percent = (data.task / data.total) * 100
+            changeProgress(percent)
+        } else if (data.type === "classes-maven-custom") {
+            let percent = (data.task / data.total) * 100
+            changeProgress(percent)
+        } else if (data.type === "classes-custom") {
+            let percent = (data.task / data.total) * 100
+            changeProgress(percent)
+        } else if (data.type === "classes") {
+            let percent = (data.task / data.total) * 100
+            changeProgress(percent)
+        }
+    })
+
+    let i = 0
+    ipc.on('MissedModsDownload', (event, data) => {
+        i++
+        document.getElementById('progressDownload').innerHTML =
+            `Téléchargement de ${i} mods sur ${data.numberMods}`
+        let percent = (i / data.numberMods) * 100
+        changeProgress(percent)
+    })
+
+    ipc.on('forgeAlreadyDownload', (event, data) => {
+        document.getElementById('progressDownload').innerHTML = "Forge déjà téléchargé"
+    })
+
+    ipc.on('forgeDownloaded', (event, data) => {
+        document.getElementById('progressDownload').innerHTML = data
+    })
+
+    ipc.on('javaAlreadyDownloaded', (event, data) => {
+        document.getElementById('progressDownload').innerHTML = "Java déjà téléchargé"
+    })
+
+    ipc.on('javaDownloaded', (event, data) => {
+        document.getElementById('progressDownload').innerHTML = data
+    })
 
     ipc.on('loginSuccess', (event, data) => {
         console.log(data)
+
+        MSResult = data
 
         let button = document.getElementById('loginMC').remove()
         let lists = document.getElementById('list')

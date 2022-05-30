@@ -8,6 +8,7 @@ const { writeRamToFile, launchMC, checkLauncherPaths } = require('./utils/functi
 const {
     autoUpdater
 } = require('electron-updater');
+const notifier = require('node-notifier');
 
 let mainWindow;
 let MSResult;
@@ -16,6 +17,7 @@ let paths = [
     app.getPath('appData') + '\\Phenix\\mods\\', 
     app.getPath('appData') + '\\Phenix\\java\\'
 ]
+let responseUpdate
 
 function createWindow () {
 
@@ -53,11 +55,22 @@ ipcMain.on('app_version', (event) => {
 });
 
 autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update_available')
+    console.log('Update !')
+    notifier.notify({
+        title: 'Mise a jour est disponible !',
+        message: 'Une mise a jour est disponible ! Voulez-vous la télécharger et l\'installer ?',
+        actions: ['Oui', 'Non'],
+        wait: true
+    },
+    function (err, response, metadata) {
+        responseUpdate = response
+    })
 })
 
 autoUpdater.on('update-downloaded', () => {
-    mainWindow.webContents.send('update_downloaded')
+    if(responseUpdate == "oui"){
+        autoUpdater.quitAndInstall()
+    }
 })
 
 ipcMain.on('restart_app', () => {
@@ -81,7 +94,8 @@ ipcMain.on('loginMS', (event, data) => {
 })
 
 ipcMain.on('saveRam', (event, data) => {
-    writeRamToFile(data, paths[0] + 'infos.json')
+    let ram = data + "G"
+    writeRamToFile(ram, paths[0] + 'infos.json')
     // let ram = {
     //     "ram": data.ram
     // }

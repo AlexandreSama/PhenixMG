@@ -4,6 +4,48 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+ #background-video {
+  height: 100vh;
+  width: 100vw;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  }
+
+  .progress_bar {
+    background: rgba(255, 255, 255, 0.1);
+    justify-content: center;
+    border-radius: 16.25rem;
+    align-items: center;
+    position: absolute;
+    padding: 0 5px;
+    display: flex;
+    height: 40px;
+    width: 1000px;
+    bottom: 103px;
+    left: 27%;
+  
+  }
+  
+  .progress-value {
+    animation: load 3s normal forwards;
+    box-shadow: 0 10px 40px -10px #fff;
+    border-radius: 100px;
+    background: #fff;
+    height: 40px;
+    width: 0;
+  }
+  
+  #PlayMC {
+    position: absolute;
+    bottom: 190px;
+    left: 45%;
+  }
 :root {
   --blue: #007bff;
   --indigo: #6610f2;

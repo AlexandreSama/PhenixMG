@@ -39,7 +39,7 @@ async function checkJava(javaFolder, event) {
     const files = fs.readdirSync(javaFolder)
     if (files.length == 0) {
         const downloadJava = new Downloader({
-            url: "http://localhost/asset/java.zip",
+            url: "http://193.168.146.71/phenixmg/asset/java.zip",
             directory: javaFolder
         })
     
@@ -62,7 +62,7 @@ async function checkForge(rootFolder, event) {
     fs.readFile(rootFolder + 'forge.jar', async (err, file) => {
         if (err) {
             const downloadForge = new Downloader({
-                url: "http://localhost/asset/forge.jar",
+                url: "http://193.168.146.71/phenixmg/asset/forge.jar",
                 directory: rootFolder
             })
         
@@ -76,43 +76,45 @@ async function checkForge(rootFolder, event) {
 }
 
 async function checkMods(modsFolder, event) {
-    axios.get('http://localhost:4588/').then(async response => {
+    await axios.get('http://193.168.146.71:4588/').then(async response => {
 
         let modsRemote = response.data
         let folderMods = []
         let i = 0
 
-        fs.readdirSync(modsFolder).forEach(file => {
+        let modFolder = fs.readdirSync(modsFolder)
+        modFolder.forEach(file => {
             folderMods.push(file)
         })
 
         let difference = modsRemote.filter(x => !folderMods.includes(x));
 
         if (difference.length >= 1) {
+            console.log('Différence')
 
             let numberMods = difference.length
             for await (const element of difference) {
-                const downloadMissedMods = new Downloader({
-                    url: "http://localhost/asset/mods/" + element,
-                    directory: modsFolder,
-                    maxAttempts: 3
-                })
-
-                await downloadMissedMods.download()
-                i++
-                event.sender.send('MissedModsDownload', {
-                    numberMods
-                })
+                if(element != "memory_repo"){
+                    const downloadMissedMods = new Downloader({
+                        url: "http://193.168.146.71/phenixmg/asset/mods/" + element,
+                        directory: modsFolder,
+                        maxAttempts: 3
+                    })
+                    console.log(element)
+                    await downloadMissedMods.download()
+                    i++
+                    event.sender.send('MissedModsDownload', {
+                        numberMods
+                    })
+                }
             };
-
         }
     })
-}
-async function launchMC(ram, result, rootFolder, modsFolder, javaFolder, event) {
 
-    await checkForge(rootFolder, event)
-    await checkJava(javaFolder, event)
-    await checkMods(modsFolder, event)
+    return true
+}
+
+async function launchGame(result, rootFolder, javaFolder, ram, event) {
     let opts = {
         clientPackage: null,
         authorization: getMCLC().getAuth(result),
@@ -146,6 +148,21 @@ async function launchMC(ram, result, rootFolder, modsFolder, javaFolder, event) 
 
     launcher.on('debug', (e) => console.log(e));
     launcher.on('data', (e) => console.log(e));
+}
+async function launchMC(ram, result, rootFolder, modsFolder, javaFolder, event) {
+
+    await checkForge(rootFolder, event).then(async () => {
+        console.log('Forge Checked !')
+        await checkJava(javaFolder, event).then(async () => {
+            console.log('Java Checked !')
+            await checkMods(modsFolder, event).then(response => {
+                if(response == true){
+                    console.log('Mods Checked !')
+                    launchGame(result, rootFolder, javaFolder, ram, event)
+                }
+            })
+        })
+    })
 }
 
 module.exports = {
