@@ -1,4 +1,4 @@
-const { ipcMain } = require('electron');
+const { ipcMain, Tray } = require('electron');
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -54,6 +54,12 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  const tray = new Tray(__dirname + '/logo.ico')
+  tray.setToolTip('Launcher PhenixMG')
+  tray.on('click', () => {
+      mainWindow.show()
+  })
 }
 
 /* Checking for updates and notifying the user. */
@@ -156,6 +162,6 @@ ipcMain.on('playMC', (event, data) => {
     fs.readFile(paths[0] + 'infos.json', (err, data) => {
         let ram = JSON.parse(data)
         console.log(ram.ram)
-        launchMC(ram.ram, MSResult, paths[0], paths[1], paths[2], event)
+        launchMC(ram.ram, MSResult, paths[0], paths[1], paths[2], event, mainWindow)
     })
 })

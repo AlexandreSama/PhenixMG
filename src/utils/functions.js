@@ -154,8 +154,9 @@ async function checkMods(modsFolder, event) {
  * @param javaFolder - The path to the java folder
  * @param ram - The amount of ram you want to allocate to the game.
  * @param event - The event that is sent from the renderer process
+ * @param mainWindow - The Main Window
  */
-async function launchGame(result, rootFolder, javaFolder, ram, event) {
+async function launchGame(result, rootFolder, javaFolder, ram, event, mainWindow) {
     let opts
     if(ram){
         opts = {
@@ -195,8 +196,12 @@ async function launchGame(result, rootFolder, javaFolder, ram, event) {
     launcher.on('close', (e) => {
         if(e == 1){
             log.warn('The Minecraft Process Stop with Code Error : ' + e + ' Wich means that you close the Minecraft Process')
+            mainWindow.show()
+            event.sender.send('stoppingGame')
         }else{
             log.error("The Minecraft Process Stop with Code Error : " + e + " Wich means that your Minecraft Process has crashed. Check your RAM or the logs, otherwise call my creator and give him this code error and your log file !")
+            mainWindow.show()
+            event.sender.send('stoppingGame')
         }
     })
     launcher.on('progress', (e) => {
@@ -217,6 +222,10 @@ async function launchGame(result, rootFolder, javaFolder, ram, event) {
     launcher.on('data', (e) => {
         log.info('["Minecraft-Data"] ' + e)
     });
+    launcher.once('data', (e) => {
+        mainWindow.hide()
+        event.sender.send('LaunchingGame')
+    })
 }
 
 /**
@@ -229,7 +238,7 @@ async function launchGame(result, rootFolder, javaFolder, ram, event) {
  * @param javaFolder - The folder where the java executable is located
  * @param event - The event that is emitted from the main process
  */
-async function launchMC(ram, result, rootFolder, modsFolder, javaFolder, event) {
+async function launchMC(ram, result, rootFolder, modsFolder, javaFolder, event, mainWindow) {
 
     await checkForge(rootFolder, event).then(async () => {
         console.log('Forge Checked !')
@@ -238,7 +247,7 @@ async function launchMC(ram, result, rootFolder, modsFolder, javaFolder, event) 
             await checkMods(modsFolder, event).then(response => {
                 if(response == true){
                     console.log('Mods Checked !')
-                    launchGame(result, rootFolder, javaFolder, ram, event)
+                    launchGame(result, rootFolder, javaFolder, ram, event, mainWindow)
                 }
             })
         })
