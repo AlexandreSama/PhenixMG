@@ -9,6 +9,8 @@ const AdmZip = require("adm-zip");
 const Downloader = require("nodejs-file-downloader");
 const { Axios, default: axios } = require("axios");
 const path = require("path");
+const log = require('electron-log');
+
 
 /**
  * It takes a ram object and a root folder, and writes the ram object to the root folder.
@@ -188,11 +190,17 @@ async function launchGame(result, rootFolder, javaFolder, ram, event) {
             }
         }
     }
-    console.log("Starting!")
     launcher.launch(opts);
 
+    launcher.on('close', (e) => {
+        if(e == 1){
+            log.warn('The Minecraft Process Stop with Code Error : ' + e + ' Wich means that you close the Minecraft Process')
+        }else{
+            log.error("The Minecraft Process Stop with Code Error : " + e + " Wich means that your Minecraft Process has crashed. Check your RAM or the logs, otherwise call my creator and give him this code error and your log file !")
+        }
+    })
     launcher.on('progress', (e) => {
-        console.log(e)
+        log.silly('["Minecraft-Progress"] ' + e.type + ' | ' + e.task + ' | ' + e.total)
         let type = e.type
         let task = e.task
         let total = e.total
@@ -201,11 +209,14 @@ async function launchGame(result, rootFolder, javaFolder, ram, event) {
             task,
             total
         }))
-        console.log(e)
     })
 
-    launcher.on('debug', (e) => console.log(e));
-    launcher.on('data', (e) => console.log(e));
+    launcher.on('debug', (e) => {
+        log.debug('["Minecraft-Debug"] ' + e)
+    });
+    launcher.on('data', (e) => {
+        log.info('["Minecraft-Data"] ' + e)
+    });
 }
 
 /**
