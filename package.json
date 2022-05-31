@@ -1,7 +1,7 @@
 {
   "name": "phenixmg",
   "version": "1.0.5",
-  "description": "",
+  "description": "A Launcher for Our Minecraft Modded Server",
   "main": "src/index.js",
   "icon": "src/logo.ico",
   "scripts": {
