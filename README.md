@@ -10,7 +10,6 @@
 [![Version](https://img.shields.io/github/package-json/v/AlexandreSama/PhenixMG?style=for-the-badge)]()
 [![GitHub Issues](https://img.shields.io/github/issues/AlexandreSama/PhenixMG?style=for-the-badge)](https://github.com/AlexandreSama/PhenixMG/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexandreSama/PhenixMG?style=for-the-badge)](https://github.com/AlexandreSama/PhenixMG/pulls)
-[![License](https://img.shields.io/github/license/AlexandreSama/PhenixMG?style=for-the-badge)](/LICENSE)
 
 </div>
 
@@ -66,26 +65,6 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo.
 
-## 🔧 Running the tests <a name = "tests"></a>
-
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
 ## 🎈 Usage <a name="usage"></a>
 
 Add notes about how to use the system.
@@ -96,14 +75,13 @@ Add additional notes about how to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
+- [Electron](https://www.electronjs.org/) - Database
+- [Minecraft-Launcher-Core](https://www.npmjs.com/package/minecraft-launcher-core) - Server Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@kylelobo](https://github.com/AlexandreSama) - Idea & Initial work
+- [@AlexandreSama](https://github.com/AlexandreSama) - Idea & Initial work
 
 See also the list of [contributors](https://github.com/AlexandreSama/PhenixMG/contributors) who participated in this project.
 
