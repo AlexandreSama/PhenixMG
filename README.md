@@ -7,10 +7,10 @@
 
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/AlexandreSama/PhenixMG/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/AlexandreSama/PhenixMG/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+[![Version](https://img.shields.io/github/package-json/v/AlexandreSama/PhenixMG?style=for-the-badge)]()
+[![GitHub Issues](https://img.shields.io/github/issues/AlexandreSama/PhenixMG?style=for-the-badge)](https://github.com/AlexandreSama/PhenixMG/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexandreSama/PhenixMG?style=for-the-badge)](https://github.com/AlexandreSama/PhenixMG/pulls)
+[![License](https://img.shields.io/github/license/AlexandreSama/PhenixMG?style=for-the-badge)](/LICENSE)
 
 </div>
 
