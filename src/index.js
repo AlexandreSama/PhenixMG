@@ -14,6 +14,7 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info"
 
 const notifier = require('node-notifier');
+const path = require('path');
 
 log.info('App starting...');
 let mainWindow;
@@ -38,9 +39,17 @@ function sendStatusToWindow(text) {
  */
 function createWindow () {
 
-  mainWindow = new BrowserWindow({width: 1800, height: 1200, webPreferences: {contextIsolation: false, nodeIntegration: true}}); // on définit une taille pour notre fenêtre
+  mainWindow = new BrowserWindow({
+    width: 1800, 
+    height: 1200, 
+    webPreferences: {
+        contextIsolation: false, 
+        nodeIntegration: true
+        },
+    icon: __dirname + '/logo.ico'
+    }); // on définit une taille pour notre fenêtre
 
-  mainWindow.loadURL(`file://${__dirname}/views/main.html`); // on doit charger un chemin absolu
+  mainWindow.loadURL(`file://${__dirname}/views/login.html`); // on doit charger un chemin absolu
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -98,12 +107,14 @@ autoUpdater.on('update-available', () => {
 
 /* Listening for an update-downloaded event and then sending a message to the window. */
 autoUpdater.on('update-downloaded', () => {
+    sendStatusToWindow('Update Téléchargé !')
+    sendStatusToWindow(responseUpdate)
     if(responseUpdate == "oui"){
-        autoUpdater.quitAndInstall()
+        autoUpdater.quitAndInstall(true)
     }
 })
 
-/* Listening for the loginMS event from the renderer process. */
+/* A function that is called when the user clicks on the login button. */
 ipcMain.on('loginMS', (event, data) => {
     msmc.fastLaunch('raw', (update) => {
 
@@ -114,7 +125,21 @@ ipcMain.on('loginMS', (event, data) => {
         }
         MSResult = result
         console.log('testas')
-        mainWindow.webContents.send('loginSuccess', (result.profile))
+        console.log(paths[0] + 'infos.json') 
+        fs.readFile(paths[0] + 'infos.json', (err, data) => {
+            if(data == undefined){
+                mainWindow.loadURL(`file://${__dirname}/../src/views/main.html`)
+                mainWindow.webContents.once('dom-ready', () => {
+                    mainWindow.webContents.send('loginSuccessWithoutRam', (result.profile))
+                });
+            }else{
+                let datas = JSON.parse(data)
+                mainWindow.loadURL(`file://${__dirname}/../src/views/main.html`)
+                mainWindow.webContents.once('dom-ready', () => {
+                    mainWindow.webContents.send('loginSuccessWithRam', [result.profile, datas.ram])
+                })
+            }
+        })
     })
 
     checkLauncherPaths(paths[0], paths[2], paths[1], event)

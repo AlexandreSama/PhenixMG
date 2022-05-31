@@ -21,15 +21,13 @@
             <div class="img bg-wrap text-center py-4" style="background-image: url(images/bg_1.jpg);">
                 <div class="user-logo" id="userInfos">
                     <div class="img" id="userLogo"></div>
+                    <h3 id="userPseudo"></h3>
                 </div>
             </div>
             <ul class="list-unstyled components mb-5" id="listSide">
                 <li class="active">
                     <a href="#"><span class="fa fa-home mr-3"></span> Accueil</a>
                 </li>
-                <!-- <li>
-                    <a href="#"><span class="fa fa-sign-out mr-3"></span> Se déconnecter</a>
-                </li> -->
             </ul>
 
         </nav>
@@ -62,24 +60,8 @@
 
 <script>
     document.getElementById('background-video').volume = 0.2
-    let ul = document.getElementById('listSide')
-    let li = document.createElement('li')
-    let a = document.createElement('a')
-    let span = document.createElement('span')
     let MSResult
     const progressbar = document.querySelector(".progress-value");
-
-    span.setAttribute("class", "fa-solid fa-key")
-
-    a.setAttribute("id", "loginMC")
-    a.setAttribute("href", "#")
-    a.appendChild(span)
-    a.appendChild(document.createTextNode("   Se connecter"))
-
-    li.setAttribute('id', 'list')
-    li.appendChild(a)
-
-    ul.appendChild(li)
 
     const changeProgress = (progress) => {
         progressbar.style.width = `${progress}%`;
@@ -87,9 +69,6 @@
 
 
     const ipc = require("electron").ipcRenderer;
-    document.getElementById('loginMC').addEventListener('click', () => {
-        ipc.send('loginMS')
-    })
 
     document.getElementById("button-addon2").addEventListener("click", () => {
         if(MSResult){
@@ -154,32 +133,22 @@
         document.getElementById('progressDownload').innerHTML = data
     })
 
-    ipc.on('loginSuccess', (event, data) => {
+    ipc.on('loginSuccessWithoutRam', (event, data) => {
         console.log(data)
-
         MSResult = data
+        
+        document.getElementById('userLogo').setAttribute('style', `background-image: url('https://crafatar.com/avatars/${data.id}');`)
+        document.getElementById('userPseudo').innerHTML += data.name
+    })
 
-        let button = document.getElementById('loginMC').remove()
-        let lists = document.getElementById('list')
-        let newButton = document.createElement('a')
-        let newSpan = document.createElement('span')
+    ipc.on('loginSuccessWithRam', (event, data) => {
+        console.log(data)
+        MSResult = data
+        
+        document.getElementById('userLogo').setAttribute('style', `background-image: url('https://crafatar.com/avatars/${data[0].id}');`)
+        document.getElementById('userPseudo').innerHTML += data[0].name
 
-        newButton.setAttribute('id', 'logoutMC')
-        newButton.setAttribute("href", "#")
-        span.setAttribute('class', 'fa-solid fa-right-from-bracket')
-
-        newButton.appendChild(span)
-        newButton.appendChild(document.createTextNode("   Se déconnecter"))
-        lists.appendChild(newButton)
-
-        let userInfos = document.getElementById('userInfos')
-        let pdpUser = document.getElementById('userLogo')
-        let nameUser = document.createElement("h3")
-
-        pdpUser.setAttribute('style', `background-image: url('https://crafatar.com/avatars/${data.id}');`)
-        nameUser.innerHTML += data.name
-
-        userInfos.appendChild(nameUser)
+        document.getElementById('ramValue').value = data[1].replace('G', '')
     })
 </script>
 

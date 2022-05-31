@@ -4,15 +4,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
+
+    <script src="../assets/js/popper.js"></script>
     <title>Login</title>
 </head>
 <body>
-    <button id="loginMS">Se connecter avec Microsoft</button>
+    <body class="img js-fullheight" style="background-image: url(../assets/images/WallpaperBackgroundMain.jpg);">
+        <section class="ftco-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <h2 class="heading-section">PhenixMG</h2>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="login-wrap p-0">
+                            <h3 class="mb-4 text-center">Déjà un compte ?</h3>
+                            <form action="#" class="signin-form">
+                                <p class="w-100 text-center">&mdash; se connecter avec &mdash;</p>
+                                <div class="social d-flex text-center">
+                                    <a href="#" class="px-2 py-2 mr-md-1 rounded" id="MicrosoftLogin"><span
+                                            class="ion-logo-facebook mr-2"></span>
+                                        Microsoft</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 </body>
 
+<script>window.$ = window.jQuery = require('jquery');</script>
+<script src="../assets/js/login.js"> </script>
 <script>
     const ipc = require('electron').ipcRenderer;
-    document.getElementById('loginMS').addEventListener('click', () => {
+    document.getElementById('MicrosoftLogin').addEventListener('click', () => {
         ipc.send('loginMS')
     })
 </script>
