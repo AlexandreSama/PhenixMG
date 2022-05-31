@@ -75,9 +75,9 @@ Add additional notes about how to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [Electron](https://www.electronjs.org/) - Database
-- [Minecraft-Launcher-Core](https://www.npmjs.com/package/minecraft-launcher-core) - Server Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+- [Electron](https://www.electronjs.org/) - Windows Relations Framework
+- [Minecraft-Launcher-Core](https://www.npmjs.com/package/minecraft-launcher-core) - Minecraft Framework
+- [NodeJs](https://nodejs.org/en/) - Environments
 
 ## ✍️ Authors <a name = "authors"></a>
 
