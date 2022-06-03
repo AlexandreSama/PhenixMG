@@ -4,6 +4,42 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+ label{
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #777;
+  padding-left: 3px;
+}
+
+.form-control{
+  border-radius: 10px;
+}
+
+input[placeholder]{
+  font-weight: 500;
+}
+.form-control:focus{
+  box-shadow: none;
+  border: 1.5px solid #0779e4;
+}
+select{
+  display: block;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  height: 40px;
+  padding: 5px 10px;
+  /* -webkit-appearance: none; */
+}
+
+select:focus{
+  outline: none;
+}
+
+
+
+
 
  #background-video {
   height: 100vh;

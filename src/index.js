@@ -1,4 +1,4 @@
-const { ipcMain, Tray } = require('electron');
+const { ipcMain, Tray, shell } = require('electron');
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -14,7 +14,6 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info"
 
 const notifier = require('node-notifier');
-const path = require('path');
 
 log.info('App starting...');
 let mainWindow;
@@ -164,4 +163,28 @@ ipcMain.on('playMC', (event, data) => {
         console.log(ram.ram)
         launchMC(ram.ram, MSResult, paths[0], paths[1], paths[2], event, mainWindow)
     })
+})
+
+ipcMain.on('GoToSettings', (event, data) => {
+    mainWindow.loadURL(`file://${__dirname}/../src/views/param.html`)
+    mainWindow.webContents.once('dom-ready', () => {
+        mainWindow.webContents.send('UserDataFromMain', data)
+    })
+})
+
+ipcMain.on('GoToMain', (event, data) => {
+    console.log(data)
+    mainWindow.loadURL(`file://${__dirname}/../src/views/main.html`)
+    mainWindow.webContents.once('dom-ready', () => {
+        mainWindow.webContents.send('UserDataFromSettings', data)
+    })
+})
+
+ipcMain.on('openLogFile', (event, data) => {
+    let path = app.getPath('appData') + '\\phenixmg\\logs\\main.log'
+    shell.openPath(path)
+})
+
+ipcMain.on('openLauncherFolder', (event, data) => {
+    shell.openPath(paths[0])
 })

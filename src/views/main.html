@@ -28,6 +28,9 @@
                 <li class="active">
                     <a href="#"><span class="fa fa-home mr-3"></span> Accueil</a>
                 </li>
+                <li>
+                    <a href="#" id="GoToSettings"><span class="fa fa-hammer mr-3"></span> Paramètres</a>
+                </li>
             </ul>
 
         </nav>
@@ -38,10 +41,6 @@
                 <source src="http://193.168.146.71/phenixmg/asset/Backgroundlauncher.mp4" type="video/mp4">
             </video>
             <h2 class="mb-4">Phenix MG</h2>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Quantité de ram ? (Juste le nombre)" aria-label="Recipient's username" aria-describedby="button-addon2" id="ramValue" style="background-color: transparent; color: black; border: 1px solid;">
-                <button class="btn btn-success" type="button" id="button-addon2">Sauvegarder</button>
-            </div>
 
             <button id="playMC">Jouer</button>
             <div class="progress_bar">
@@ -61,6 +60,7 @@
 <script>
     document.getElementById('background-video').volume = 0.2
     let MSResult
+    let MSResultRam
     const progressbar = document.querySelector(".progress-value");
 
     const changeProgress = (progress) => {
@@ -70,19 +70,16 @@
 
     const ipc = require("electron").ipcRenderer;
 
-    document.getElementById("button-addon2").addEventListener("click", () => {
-        if(MSResult){
-            let ram = document.getElementById("ramValue").value;
-            ipc.send("saveRam", ram);
+    document.getElementById('GoToSettings').addEventListener('click', () => {
+        if(!MSResult){
+            ipc.send('GoToSettings', MSResultRam[0]) 
         }else{
-
+            ipc.send('GoToSettings', MSResult) 
         }
-    });
+    })
 
     document.getElementById("playMC").addEventListener("click", () => {
-        if(MSResult){
-            ipc.send("playMC");
-        }
+        ipc.send("playMC");
     });
 
     ipc.on('dataDownload', (event, data) => {
@@ -143,13 +140,19 @@
 
     ipc.on('loginSuccessWithRam', (event, data) => {
         console.log(data)
-        MSResult = data
+        MSResultRam = data
         
         document.getElementById('userLogo').setAttribute('style', `background-image: url('https://crafatar.com/avatars/${data[0].id}');`)
         document.getElementById('userPseudo').innerHTML += data[0].name
 
         document.getElementById('ramValue').value = data[1].replace('G', '')
     })
+
+    ipc.on('UserDataFromSettings', (event, data) => {
+        MSResult = data
+        document.getElementById('userLogo').setAttribute('style', `background-image: url('https://crafatar.com/avatars/${data.id}');`)
+        document.getElementById('userPseudo').innerHTML += data.name
+    }) 
 
     ipc.on('LaunchingGame', (event, data) => {
         document.getElementById('background-video').pause()
